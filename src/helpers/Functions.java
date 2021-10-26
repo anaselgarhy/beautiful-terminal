@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Functions {
+
     public static Os getOs() {
         String osName = System.getProperty("os.name").toLowerCase();
         Os os;
@@ -21,37 +22,42 @@ public class Functions {
         return os;
     }
     public static Process runCommand(String command, File currentDirectory, Os os) throws IOException {
-        if (command.contains("cd") && command.length() > 3) {
-            String slash = getSlash(os);
+        if (currentDirectory != null) {
             String currentPath = currentDirectory.getPath();
-            String afterCd = command.substring(3);
-            if (afterCd.startsWith("..")) {
-                int backs = getNumOfBack(command);
+            String slash = getSlash(os);
+            if (command.contains("cd") && command.length() > 3) {
+                String afterCd = command.substring(3);
+                if (afterCd.startsWith("..")) {
+                    int backs = getNumOfBack(command);
 
-                for (int i = 0; i < backs; i++) {
-                    String fileName = slash + currentDirectory.getName();
-                    int end = currentPath.length() - fileName.length();
-                    currentPath = currentPath.substring(0, end);
-                }
-            } else {
-                if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
-                    currentPath += slash + afterCd.replace(".", "");
+                    for (int i = 0; i < backs; i++) {
+                        String fileName = slash + currentDirectory.getName();
+                        int end = currentPath.length() - fileName.length();
+                        currentPath = currentPath.substring(0, end);
+                    }
+                } else {
+                    if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
+                        currentPath += slash + afterCd.replace(".", "");
+                    }
                 }
             }
-            setCurrentDir(currentPath.length() == 2? currentPath + slash : currentPath);
+            String finalPath = currentPath.length() == 2 ? currentPath + slash : currentPath;
+            // Test path
+            if (new File(finalPath).isDirectory())
+                setCurrentDir(finalPath);
         }
         String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
         return Runtime.getRuntime().exec(runCommand, null, currentDirectory);
     }
 
-    public static String getResult(Process process) throws IOException {
+    public static String getResult(Process process, Os os) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
         boolean isPath = false;
         int i = 0;
         StringBuilder result = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            isPath = isPath(line);
+            isPath = isPath(line, os);
             result.append(line).append('\n');
             i++;
         }
@@ -61,8 +67,8 @@ public class Functions {
         }
         return result.toString();
     }
-    public static boolean isPath(String line) {
-        return line.contains(getSlash(getOs()));
+    public static boolean isPath(String line, Os os) {
+        return line.contains(getSlash(os));
     }
 
     public static void setCurrentDir(String path) {
@@ -71,7 +77,7 @@ public class Functions {
     public static void initCurrentDirectory(Os os) {
         try {
             Process process = runCommand((os == Os.WINDOWS) ? "cd" : "ls", null, os);
-            getResult(process);
+            getResult(process, os);
         } catch (IOException ignored) { }
     }
 

@@ -33,7 +33,7 @@ public class Main {
 
             // print result
             try {
-                System.out.println(Functions.getResult(process));
+                System.out.println(Functions.getResult(process, os));
 
             } catch (IOException e) {
                 e.printStackTrace();
