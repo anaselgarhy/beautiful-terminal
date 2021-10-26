@@ -21,11 +21,24 @@ public class Functions {
         return os;
     }
     public static Process runCommand(String command, File currentDirectory, Os os) throws IOException {
-        if (command.contains(os == Os.WINDOWS? "cd" : "ls") && command.length() > 3) {
-            if (command.substring(3).startsWith("..")) {
+        if (command.contains("cd") && command.length() > 3) {
+            String slash = getSlash(os);
+            String currentPath = currentDirectory.getPath();
+            String afterCd = command.substring(3);
+            if (afterCd.startsWith("..")) {
+                int backs = getNumOfBack(command);
 
+                for (int i = 0; i < backs; i++) {
+                    String fileName = slash + currentDirectory.getName();
+                    int end = currentPath.length() - fileName.length();
+                    currentPath = currentPath.substring(0, end);
+                }
+            } else {
+                if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
+                    currentPath += slash + afterCd.replace(".", "");
+                }
             }
-            setCurrentDir(command.substring(3));
+            setCurrentDir(currentPath.length() == 2? currentPath + slash : currentPath);
         }
         String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
         return Runtime.getRuntime().exec(runCommand, null, currentDirectory);
@@ -49,8 +62,7 @@ public class Functions {
         return result.toString();
     }
     public static boolean isPath(String line) {
-        String slash = (getOs() == Os.WINDOWS? "\\" : "/");
-        return line.contains(slash);
+        return line.contains(getSlash(getOs()));
     }
 
     public static void setCurrentDir(String path) {
@@ -65,12 +77,17 @@ public class Functions {
 
     public static int getNumOfBack(String command) {
         int numOfBack = 0;
-        for (int i = 0; i < command.length(); i++) {
-            String temp = "" + command.charAt(i) + command.charAt(++i);
+        command = command.replace("cd ", "");
+        for (int i = 0; i < command.length() && i + 1 < command.length(); i++) {
+            String temp = command.charAt(i) + "" + command.charAt(++i);
             if (temp.equals(".."))
                 numOfBack++;
         }
         return numOfBack;
+    }
+
+    public static String getSlash(Os os) {
+        return (os == Os.WINDOWS? "\\" : "/");
     }
 
 }
