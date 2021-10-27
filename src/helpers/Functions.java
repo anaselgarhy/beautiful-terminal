@@ -96,4 +96,10 @@ public class Functions {
         return (os == Os.WINDOWS? "\\" : "/");
     }
 
+    public static String getNextLine(String result) {
+        String[] tempArr = result.split("\n");
+        if (Variables.currentLine < tempArr.length)
+            return tempArr[Variables.currentLine++];
+        return "";
+    }
 }
