@@ -29,8 +29,10 @@ public class Main {
             command = input.nextLine();
             // Run command
             ProcessBuilder processBuilder = Functions.buildProcess(command, currentDirectory, os);
+            Process process = null;
             try {
-                System.out.print(Functions.getResult(processBuilder.start(), os));
+                process = processBuilder.start();
+                System.out.print(Functions.getResult(command, process, currentDirectory, os));
             } catch (IOException e) {
                 e.printStackTrace();
             }

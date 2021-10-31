@@ -37,7 +37,6 @@ public class Functions {
      * @throws IOException If he can't execute the command because he doesn't have permissions
      */
     public static Process runCommand(String command, File currentDirectory, Os os) throws IOException {
-        setDirectory(command, currentDirectory, os);
         String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
         return Runtime.getRuntime().exec(runCommand, null, currentDirectory);
     }
@@ -56,20 +55,20 @@ public class Functions {
         String[] cmdarray = new String[st.countTokens()];
         for (int i = 0; st.hasMoreTokens(); i++)
             cmdarray[i] = st.nextToken();
-        // Set current directory
-        setDirectory(command, currentDirectory, os);
         return new ProcessBuilder(cmdarray)
                 .directory(currentDirectory).inheritIO();
     }
 
     /**
      * It is used to obtain the results of the execution of the command
+     * @param command The command
      * @param process The operation for which you want to print the results of its execution
+     * @param currentDirectory The current directory
      * @param os The operating system
      * @return The result
      * @throws IOException If an I/O error occurs
      */
-    public static String getResult(Process process, Os os) throws IOException {
+    public static String getResult(String command, Process process, File currentDirectory, Os os) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
         boolean isPath = false;
@@ -81,11 +80,11 @@ public class Functions {
             i++;
         }
         // Set current directory
-        if (isPath && i == 1) {
+        setDirectory(command, process, currentDirectory, os);
+        if (isPath && i == 1 && process.exitValue() == 0) {
             setCurrentDir(result.toString());
             return "";
         }
-        result.append('\b');
         return result.toString();
     }
 
@@ -112,9 +111,10 @@ public class Functions {
      * @param os The operating system
      */
     public static void initCurrentDirectory(Os os) {
+        String command = (os == Os.WINDOWS) ? "cd" : "pwd";
         try {
-            Process process = runCommand((os == Os.WINDOWS) ? "cd" : "pwd", null, os);
-            getResult(process, os);
+            Process process = runCommand(command, null, os);
+            getResult(command , process, null, os);
         } catch (IOException ignored) { }
     }
 
@@ -158,14 +158,18 @@ public class Functions {
     /**
      * Set the current directory
      * @param command The command
+     * @param process The process
      * @param currentDirectory The current directory
      * @param os The operating system
      */
-    public static void setDirectory(String command, File currentDirectory, Os os) {
+    public static boolean setDirectory(String command, Process process, File currentDirectory, Os os) {
         if (currentDirectory != null) {
+            try {
+                process.waitFor(); // pause this thread until end process
+            } catch (InterruptedException ignored) {}
             String currentPath = currentDirectory.getPath();
             String slash = getSlash(os);
-            if (command.contains("cd") && command.length() > 3) {
+            if (command.contains("cd") && command.length() > 3 && process.exitValue() == 0) {
                 String afterCd = command.substring(3);
                 if (afterCd.startsWith("..")) {
                     int backs = getNumOfBack(command);
@@ -183,8 +187,11 @@ public class Functions {
             }
             String finalPath = currentPath.length() == 2 ? currentPath + slash : currentPath;
             // Test path
-            if (new File(finalPath).isDirectory())
+            if (new File(finalPath).isDirectory()) {
                 setCurrentDir(finalPath);
+                return true;
+            }
         }
+        return false;
     }
 }
