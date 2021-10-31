@@ -47,7 +47,7 @@ public class Functions {
      * @param command The command
      * @param currentDirectory The directory you want to run the command in
      * @param os The operating system
-     * @return Object from ProcessBuilder class that re
+     * @return Object from ProcessBuilder class that represents It is a ready-to-implement process
      */
     public static ProcessBuilder buildProcess(String command, File currentDirectory, Os os) {
         String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
@@ -63,6 +63,13 @@ public class Functions {
                 .inheritIO();
     }
 
+    /**
+     * It is used to obtain the results of the execution of the command
+     * @param process The operation for which you want to print the results of its execution
+     * @param os The operating system
+     * @return The result
+     * @throws IOException If an I/O error occurs
+     */
     public static String getResult(Process process, Os os) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
@@ -74,26 +81,48 @@ public class Functions {
             result.append(line).append('\n');
             i++;
         }
+        // Set current directory
         if (isPath && i == 1) {
             setCurrentDir(result.toString());
             return "";
         }
         return result.toString();
     }
+
+    /**
+     * This function is used to check whether the text represents a path or not (needs to be modified)
+     * @param line The line you want to check
+     * @param os The operating system
+     * @return True if the line represents a path, false if it is not a path
+     */
     public static boolean isPath(String line, Os os) {
         return line.contains(getSlash(os));
     }
 
+    /**
+     * This function is used to set the current path
+     * @param path The path
+     */
     public static void setCurrentDir(String path) {
         Files.setCurrentDirectory(new File(path.replace("\n", "")));
     }
+
+    /**
+     * This function uses an initial path, usually used at the start of the program (needs to be modified)
+     * @param os The operating system
+     */
     public static void initCurrentDirectory(Os os) {
         try {
-            Process process = runCommand((os == Os.WINDOWS) ? "cd" : "ls", null, os);
+            Process process = runCommand((os == Os.WINDOWS) ? "cd" : "pwd", null, os);
             getResult(process, os);
         } catch (IOException ignored) { }
     }
 
+    /**
+     * This function is used to find the number of steps back
+     * @param command The change directory command
+     * @return The number of steps back
+     */
     public static int getNumOfBack(String command) {
         int numOfBack = 0;
         command = command.replace("cd ", "");
@@ -105,10 +134,20 @@ public class Functions {
         return numOfBack;
     }
 
+    /**
+     * This function is used to get the system slash
+     * @param os The operating system
+     * @return The slash use in this operating system
+     */
     public static String getSlash(Os os) {
         return (os == Os.WINDOWS? "\\" : "/");
     }
 
+    /**
+     * Get the result line by line
+     * @param result The result
+     * @return the next line
+     */
     public static String getNextLine(String result) {
         String[] tempArr = result.split("\n");
         if (Variables.currentLine < tempArr.length)
@@ -116,6 +155,12 @@ public class Functions {
         return "";
     }
 
+    /**
+     * Set the current directory
+     * @param command The command
+     * @param currentDirectory The current directory
+     * @param os The operating system
+     */
     public static void setDirectory(String command, File currentDirectory, Os os) {
         if (currentDirectory != null) {
             String currentPath = currentDirectory.getPath();

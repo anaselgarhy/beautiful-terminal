@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
     public static void main(String[] args) {
-        // Test
+        /* --------------------------------- Test --------------------------------- */
         Scanner input = new Scanner(System.in);
         Os os = Functions.getOs();
         String command;
