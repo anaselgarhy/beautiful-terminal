@@ -11,6 +11,10 @@ import java.util.StringTokenizer;
 
 public class Functions {
 
+    /**
+     * Get the operating system name
+     * @return object fom Os enum represent operating system
+     */
     public static Os getOs() {
         String osName = System.getProperty("os.name").toLowerCase();
         Os os;
@@ -22,12 +26,29 @@ public class Functions {
             os = Os.MAC;
         return os;
     }
+
+    /**
+     * Run the command as a block, That is, it executes the entire command and then returns an object
+     * from the Process class that represents all outputs
+     * @param command The command
+     * @param currentDirectory The directory you want to run the command in
+     * @param os The operating system
+     * @return object from the Process class that represents all outputs
+     * @throws IOException If he can't execute the command because he doesn't have permissions
+     */
     public static Process runCommand(String command, File currentDirectory, Os os) throws IOException {
         setDirectory(command, currentDirectory, os);
         String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
         return Runtime.getRuntime().exec(runCommand, null, currentDirectory);
     }
 
+    /**
+     * It is used to build the process so that we can execute it and print the logs at the same time
+     * @param command The command
+     * @param currentDirectory The directory you want to run the command in
+     * @param os The operating system
+     * @return Object from ProcessBuilder class that re
+     */
     public static ProcessBuilder buildProcess(String command, File currentDirectory, Os os) {
         String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
         // split command
@@ -38,7 +59,8 @@ public class Functions {
         // Set current directory
         setDirectory(command, currentDirectory, os);
         return new ProcessBuilder(cmdarray)
-                .directory(currentDirectory).inheritIO();
+                .directory(currentDirectory)
+                .inheritIO();
     }
 
     public static String getResult(Process process, Os os) throws IOException {
