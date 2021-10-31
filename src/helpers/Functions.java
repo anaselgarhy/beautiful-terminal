@@ -59,8 +59,7 @@ public class Functions {
         // Set current directory
         setDirectory(command, currentDirectory, os);
         return new ProcessBuilder(cmdarray)
-                .directory(currentDirectory)
-                .inheritIO();
+                .directory(currentDirectory).inheritIO();
     }
 
     /**
@@ -86,6 +85,7 @@ public class Functions {
             setCurrentDir(result.toString());
             return "";
         }
+        result.append('\b');
         return result.toString();
     }
 
