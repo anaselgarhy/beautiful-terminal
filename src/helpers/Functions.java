@@ -168,24 +168,31 @@ public class Functions {
                 process.waitFor(); // pause this thread until end process
             } catch (InterruptedException ignored) {}
             String currentPath = currentDirectory.getPath();
-            String slash = getSlash(os);
             if (command.contains("cd") && command.length() > 3 && process.exitValue() == 0) {
                 String afterCd = command.substring(3);
                 if (afterCd.startsWith("..")) {
                     int backs = getNumOfBack(command);
-
                     for (int i = 0; i < backs; i++) {
-                        String fileName = slash + currentDirectory.getName();
+                        String fileName = Variables.slash + currentDirectory.getName();
                         int end = currentPath.length() - fileName.length();
-                        currentPath = currentPath.substring(0, end);
+                        if (end > 0)
+                            currentPath = currentPath.substring(0, end);
+                        else {
+                            currentPath = currentDirectory.getPath();
+                            break;
+                        }
                     }
+                    int temp = backs * 2;
+                    temp += temp - 1; // Slashes
+                    if (temp < afterCd.length())
+                        currentPath += Variables.slash + afterCd.substring(temp);
                 } else {
                     if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
-                        currentPath += slash + afterCd.replace(".", "");
+                        currentPath += Variables.slash + afterCd.replace(".", "");
                     }
                 }
             }
-            String finalPath = currentPath.length() == 2 ? currentPath + slash : currentPath;
+            String finalPath = currentPath.length() == 2 ? currentPath + Variables.slash : currentPath;
             // Test path
             if (new File(finalPath).isDirectory()) {
                 setCurrentDir(finalPath);
