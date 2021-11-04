@@ -3,6 +3,7 @@ package main;
 import enums.Os;
 import files.Files;
 import helpers.Functions;
+import helpers.Variables;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,8 @@ public class Main {
         Os os = Functions.getOs();
         String command;
 
+        // Initialize slash
+        Variables.slash = Functions.getSlash(os);
         // Initialize current directory
         Functions.initCurrentDirectory(os);
         File currentDirectory = Files.getCurrentDirectory();
