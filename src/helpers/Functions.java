@@ -27,6 +27,9 @@ public class Functions {
         return os;
     }
 
+    public static String getHomeDirPath() {
+        return System.getProperty("user.home");
+    }
     /**
      * Run the command as a block, That is, it executes the entire command and then returns an object
      * from the Process class that represents all outputs
@@ -202,7 +205,14 @@ public class Functions {
                             // remove quotation
                             afterCd = afterCd.substring(1, afterCd.length() - 1);
                         }
-                        currentPath += Variables.slash + afterCd;
+                        // linux short cuts
+                        if (os != Os.WINDOWS) {
+                            if (afterCd.equals("~"))
+                                currentPath = getHomeDirPath();
+                            else if (afterCd.equals("/"))
+                                currentPath = "/";
+                        } else // windows
+                            currentPath += Variables.slash + afterCd;
                     }
                 }
             }
