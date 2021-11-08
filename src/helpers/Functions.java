@@ -1,7 +1,7 @@
 package helpers;
 
 import enums.Os;
-import files.Files;
+import files.Directory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -71,7 +71,7 @@ public class Functions {
      * @return The result
      * @throws IOException If an I/O error occurs
      */
-    public static String getResult(String command, Process process, File currentDirectory, Os os) throws IOException {
+    public static String getResult(String command, Process process, Directory currentDirectory, Directory previousDirectory, Os os) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
         boolean isPath = false;
@@ -83,9 +83,9 @@ public class Functions {
             i++;
         }
         // Set current directory
-        setDirectory(command, process, currentDirectory, os);
-        if (isPath && i == 1 && process.exitValue() == 0) {
-            setCurrentDir(result.toString());
+        setDirectory(command, process, currentDirectory, previousDirectory, os);
+        if (isPath && i == 1 && process.exitValue() == 0 && currentDirectory.getPath().equals("")) {
+            setDir(result.toString(), currentDirectory);
             return "";
         }
         return result.toString();
@@ -105,19 +105,19 @@ public class Functions {
      * This function is used to set the current path
      * @param path The path
      */
-    public static void setCurrentDir(String path) {
-        Files.setCurrentDirectory(new File(path.replace("\n", "")));
+    public static void setDir(String path, Directory directory) {
+        directory.setDirectory(new File(path.replace("\n", "")));
     }
 
     /**
      * This function uses an initial path, usually used at the start of the program (needs to be modified)
      * @param os The operating system
      */
-    public static void initCurrentDirectory(Os os) {
+    public static void initCurrentDirectory(Os os, Directory currentDirectory) {
         String command = (os == Os.WINDOWS) ? "cd" : "pwd";
         try {
             Process process = runCommand(command, null, os);
-            getResult(command , process, null, os);
+            getResult(command , process, currentDirectory, null, os);
         } catch (IOException ignored) { }
     }
 
@@ -165,12 +165,14 @@ public class Functions {
      * @param currentDirectory The current directory
      * @param os The operating system
      */
-    public static boolean setDirectory(String command, Process process, File currentDirectory, Os os) {
+    public static boolean setDirectory(String command, Process process, Directory currentDirectory, Directory previousDirectory, Os os) {
         if (currentDirectory != null) {
             try {
                 process.waitFor(); // pause this thread until end process
             } catch (InterruptedException ignored) {}
+
             String currentPath = currentDirectory.getPath();
+
             if (command.contains("cd") && command.length() > 3 && process.exitValue() == 0) {
                 String afterCd = command.substring(3);
                 if (afterCd.startsWith("..")) {
@@ -207,19 +209,26 @@ public class Functions {
                         }
                         // linux short cuts
                         if (os != Os.WINDOWS) {
-                            if (afterCd.equals("~"))
-                                currentPath = getHomeDirPath();
-                            else if (afterCd.equals("/"))
-                                currentPath = "/";
+                            currentPath = switch (afterCd) {
+                                case "~" -> getHomeDirPath();
+                                case "/" -> "/";
+                                case "-" -> previousDirectory.getPath();
+                                default -> currentPath;
+                            };
                         } else // windows
                             currentPath += Variables.slash + afterCd;
                     }
                 }
             }
             String finalPath = currentPath.length() == 2 ? currentPath + Variables.slash : currentPath;
+
+            // Set prev dir
+            if (!finalPath.equals(currentDirectory.getPath())) {
+                setDir(currentDirectory.getPath(), previousDirectory);
+            }
             // Test path
             if (new File(finalPath).isDirectory()) {
-                setCurrentDir(finalPath);
+                setDir(finalPath, currentDirectory);
                 return true;
             }
         }
