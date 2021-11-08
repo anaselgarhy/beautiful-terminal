@@ -188,7 +188,21 @@ public class Functions {
                         currentPath += Variables.slash + afterCd.substring(temp);
                 } else {
                     if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
-                        currentPath += Variables.slash + afterCd.replace(".", "");
+                        String removeStart = "";
+                        if (afterCd.startsWith("./") || afterCd.startsWith(".\\"))
+                            removeStart = afterCd.substring(0, 1);
+                        else if (afterCd.startsWith("."))
+                            removeStart = ".";
+
+                        // remove . or ./
+                        afterCd = afterCd.replace(removeStart, "");
+
+                        // if user write cd "directory name" or cd 'directory name'
+                        if ((afterCd.startsWith("\"") && afterCd.endsWith("\"")) || (afterCd.startsWith("'") && afterCd.endsWith("'"))) {
+                            // remove quotation
+                            afterCd = afterCd.substring(1, afterCd.length() - 1);
+                        }
+                        currentPath += Variables.slash + afterCd;
                     }
                 }
             }
