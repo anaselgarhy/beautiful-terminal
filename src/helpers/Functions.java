@@ -2,17 +2,16 @@ package helpers;
 
 import enums.Os;
 import files.Directory;
+import main.Command;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 public class Functions {
 
     /**
      * Get the operating system name
+     *
      * @return object fom Os enum represent operating system
      */
     public static Os getOs() {
@@ -30,79 +29,36 @@ public class Functions {
     public static String getHomeDirPath() {
         return System.getProperty("user.home");
     }
+
     /**
      * Run the command as a block, That is, it executes the entire command and then returns an object
      * from the Process class that represents all outputs
-     * @param command The command
+     *
+     * @param command          The command
      * @param currentDirectory The directory you want to run the command in
-     * @param os The operating system
+     * @param os               The operating system
      * @return object from the Process class that represents all outputs
      * @throws IOException If he can't execute the command because he doesn't have permissions
      */
     public static Process runCommand(String command, File currentDirectory, Os os) throws IOException {
-        String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
+        String runCommand = (os == Os.WINDOWS ? "cmd /" : "sh -") + "c " + command;
         return Runtime.getRuntime().exec(runCommand, null, currentDirectory);
     }
 
     /**
-     * It is used to build the process so that we can execute it and print the logs at the same time
-     * @param command The command
-     * @param currentDirectory The directory you want to run the command in
-     * @param os The operating system
-     * @return Object from ProcessBuilder class that represents It is a ready-to-implement process
-     */
-    public static ProcessBuilder buildProcess(String command, File currentDirectory, Os os) {
-        String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
-        // split command
-        StringTokenizer st = new StringTokenizer(runCommand);
-        String[] cmdarray = new String[st.countTokens()];
-        for (int i = 0; st.hasMoreTokens(); i++)
-            cmdarray[i] = st.nextToken();
-        return new ProcessBuilder(cmdarray)
-                .directory(currentDirectory).inheritIO();
-    }
-
-    /**
-     * It is used to obtain the results of the execution of the command
-     * @param command The command
-     * @param process The operation for which you want to print the results of its execution
-     * @param currentDirectory The current directory
-     * @param os The operating system
-     * @return The result
-     * @throws IOException If an I/O error occurs
-     */
-    public static String getResult(String command, Process process, Directory currentDirectory, Directory previousDirectory, Os os) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        String line;
-        boolean isPath = false;
-        int i = 0;
-        StringBuilder result = new StringBuilder();
-        while ((line = reader.readLine()) != null) {
-            isPath = isPath(line, os);
-            result.append(line).append('\n');
-            i++;
-        }
-        // Set current directory
-        setDirectory(command, process, currentDirectory, previousDirectory, os);
-        if (isPath && i == 1 && process.exitValue() == 0 && currentDirectory.getPath().equals("")) {
-            setDir(result.toString(), currentDirectory);
-            return "";
-        }
-        return result.toString();
-    }
-
-    /**
      * This function is used to check whether the text represents a path or not (needs to be modified)
+     *
      * @param line The line you want to check
-     * @param os The operating system
+     * @param os   The operating system
      * @return True if the line represents a path, false if it is not a path
      */
     public static boolean isPath(String line, Os os) {
-        return line.contains(getSlash(os));
+        return line.contains(Variables.slash);
     }
 
     /**
      * This function is used to set the current path
+     *
      * @param path The path
      */
     public static void setDir(String path, Directory directory) {
@@ -111,18 +67,24 @@ public class Functions {
 
     /**
      * This function uses an initial path, usually used at the start of the program (needs to be modified)
+     *
      * @param os The operating system
      */
     public static void initCurrentDirectory(Os os, Directory currentDirectory) {
         String command = (os == Os.WINDOWS) ? "cd" : "pwd";
         try {
             Process process = runCommand(command, null, os);
-            getResult(command , process, currentDirectory, null, os);
-        } catch (IOException ignored) { }
+            new Command(currentDirectory, null, os)
+                    .setCommand(command)
+                    .setProcess(process)
+                    .getResult();
+        } catch (IOException ignored) {
+        }
     }
 
     /**
      * This function is used to find the number of steps back
+     *
      * @param command The change directory command
      * @return The number of steps back
      */
@@ -138,16 +100,8 @@ public class Functions {
     }
 
     /**
-     * This function is used to get the system slash
-     * @param os The operating system
-     * @return The slash use in this operating system
-     */
-    public static String getSlash(Os os) {
-        return (os == Os.WINDOWS? "\\" : "/");
-    }
-
-    /**
      * Get the result line by line
+     *
      * @param result The result
      * @return the next line
      */
@@ -160,72 +114,33 @@ public class Functions {
 
     /**
      * Set the current directory
-     * @param command The command
-     * @param process The process
+     *
+     * @param command          The command
+     * @param process          The process
      * @param currentDirectory The current directory
-     * @param os The operating system
+     * @param os               The operating system
      */
     public static boolean setDirectory(String command, Process process, Directory currentDirectory, Directory previousDirectory, Os os) {
         if (currentDirectory != null) {
             try {
                 process.waitFor(); // pause this thread until end process
             } catch (InterruptedException ignored) {}
-
             String currentPath = currentDirectory.getPath();
-
             if (command.contains("cd") && command.length() > 3 && process.exitValue() == 0) {
                 String afterCd = command.substring(3);
-                if (afterCd.startsWith("..")) {
-                    int backs = getNumOfBack(command);
-                    for (int i = 0; i < backs; i++) {
-                        String fileName = Variables.slash + currentDirectory.getName();
-                        int end = currentPath.length() - fileName.length();
-                        if (end > 0)
-                            currentPath = currentPath.substring(0, end);
-                        else {
-                            currentPath = currentDirectory.getPath();
-                            break;
-                        }
-                    }
-                    int temp = backs * 2;
-                    temp += temp - 1; // Slashes
-                    if (temp < afterCd.length())
-                        currentPath += Variables.slash + afterCd.substring(temp);
-                } else {
-                    if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
-                        String removeStart = "";
-                        if (afterCd.startsWith("./") || afterCd.startsWith(".\\"))
-                            removeStart = afterCd.substring(0, 1);
-                        else if (afterCd.startsWith("."))
-                            removeStart = ".";
-
-                        // remove . or ./
-                        afterCd = afterCd.replace(removeStart, "");
-
-                        // if user write cd "directory name" or cd 'directory name'
-                        if ((afterCd.startsWith("\"") && afterCd.endsWith("\"")) || (afterCd.startsWith("'") && afterCd.endsWith("'"))) {
-                            // remove quotation
-                            afterCd = afterCd.substring(1, afterCd.length() - 1);
-                        }
-                        // linux short cuts
-                        if (os != Os.WINDOWS) {
-                            currentPath = switch (afterCd) {
-                                case "~" -> getHomeDirPath();
-                                case "/" -> "/";
-                                case "-" -> previousDirectory.getPath();
-                                default -> currentPath;
-                            };
-                        } else // windows
-                            currentPath += Variables.slash + afterCd;
-                    }
+                if (afterCd.startsWith(".."))
+                    currentPath = backDir(command, currentPath, currentDirectory);
+                else if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
+                    // Clean path
+                    afterCd = cleanPath(afterCd);
+                    // linux short cuts
+                    currentPath = shortCuts(afterCd, currentPath, previousDirectory, os);
                 }
             }
             String finalPath = currentPath.length() == 2 ? currentPath + Variables.slash : currentPath;
-
             // Set prev dir
-            if (!finalPath.equals(currentDirectory.getPath())) {
+            if (!finalPath.equals(currentDirectory.getPath()))
                 setDir(currentDirectory.getPath(), previousDirectory);
-            }
             // Test path
             if (new File(finalPath).isDirectory()) {
                 setDir(finalPath, currentDirectory);
@@ -233,5 +148,59 @@ public class Functions {
             }
         }
         return false;
+    }
+
+    private static String backDir(String command, String currentPath, Directory currentDirectory) {
+        String afterCd = command.substring(3);
+        int backs = getNumOfBack(command);
+        for (int i = 0; i < backs; i++) {
+            String fileName = Variables.slash + currentDirectory.getName();
+            int end = currentPath.length() - fileName.length();
+            if (end > 0)
+                currentPath = currentPath.substring(0, end);
+            else {
+                currentPath = currentDirectory.getPath();
+                break;
+            }
+        }
+        int temp = backs * 2;
+        temp += temp - 1; // Slashes
+        if (temp < afterCd.length())
+            currentPath += Variables.slash + afterCd.substring(temp);
+        return currentPath;
+    }
+
+    private static String cleanPath(String path) {
+        String removeStart = "";
+        if (path.startsWith("./") || path.startsWith(".\\"))
+            removeStart = path.substring(0, 1);
+        else if (path.startsWith("."))
+            removeStart = ".";
+
+        // remove . or ./
+        path = path.replace(removeStart, "");
+
+        // if user write cd "directory name" or cd 'directory name'
+        if ((path.startsWith("\"") && path.endsWith("\"")) || (path.startsWith("'") && path.endsWith("'"))) {
+            // remove quotation
+            path = path.substring(1, path.length() - 1);
+        }
+        return path;
+    }
+
+    private static String shortCuts(String afterCd, String currentPath, Directory previousDirectory, Os os) {
+        // linux short cuts
+        if (os != Os.WINDOWS) {
+            currentPath = switch (afterCd) {
+                case "~" -> getHomeDirPath();
+                case "/" -> "/";
+                case "-" -> previousDirectory.getPath();
+                default -> currentPath;
+            };
+        }
+        if (afterCd.length() > 1)
+            currentPath += Variables.slash + afterCd;
+
+        return currentPath;
     }
 }
