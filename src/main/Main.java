@@ -5,6 +5,7 @@ import files.Directory;
 import helpers.Functions;
 import helpers.Variables;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -13,12 +14,12 @@ public class Main {
         /* --------------------------------- Test --------------------------------- */
         Scanner input = new Scanner(System.in);
         Os os = Functions.getOs();
-        String command;
         Directory currentDirectory = new Directory();
         Directory previousDirectory = new Directory();
+        Command command = new Command(currentDirectory, previousDirectory, os);
 
         // Initialize slash
-        Variables.slash = Functions.getSlash(os);
+        Variables.slash = File.separator;
         // Initialize current directory
         Functions.initCurrentDirectory(os, currentDirectory);
 
@@ -29,17 +30,15 @@ public class Main {
         do {
 
             System.out.print(currentDirectory.getPath() + st);
-            command = input.nextLine();
+            command.setCommand(input.nextLine());
             // Run command
-            ProcessBuilder processBuilder = Functions.buildProcess(command, currentDirectory.getDirectory(), os);
-            Process process = null;
             try {
-                process = processBuilder.start();
-                System.out.print(Functions.getResult(command, process, currentDirectory, previousDirectory, os));
+                command.run(false);
+                System.out.print(command.getResult());
             } catch (IOException e) {
                 e.printStackTrace();
             }
 //            currentDirectory = Directory.getDirectory();
-        } while (!command.equalsIgnoreCase("exit"));
+        } while (!command.getCommand().equalsIgnoreCase("exit"));
     }
 }
