@@ -3,6 +3,7 @@ package main;
 import enums.Os;
 import files.Directory;
 import helpers.Functions;
+import helpers.Variables;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,12 +85,14 @@ public class Command {
     private String processCommandDir(String command) {
         StringBuilder commandProcessed = new StringBuilder();
         for (int i = 0; i < command.length(); i++) {
-            if (command.charAt(i) == '.' && (i + 1 >= command.length() && i - 1 >= 0 && command.charAt(i - 1) == ' ')) {
-                commandProcessed.append(currentDirectory.getPath());
+            if (command.charAt(i) == '.'
+                    && ((i + 1 >= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
+                    || (i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ' && command.charAt(i + 1) == ' ')
+                    || (i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ' && command.charAt(i + 1) == Variables.slash.charAt(0)))) {
+                commandProcessed.append(Functions.processPath(currentDirectory.getPath(), os));
             } else
                 commandProcessed.append(command.charAt(i));
         }
-
         return commandProcessed.toString();
     }
 }

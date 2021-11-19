@@ -203,4 +203,25 @@ public class Functions {
 
         return currentPath;
     }
+
+    public static String processPath(String path, Os os) {
+        StringBuilder processedPath = new StringBuilder();
+        boolean quteAddedInStart = false;
+        for (char ch : path.toCharArray()) {
+            if (ch == ' ') {
+                if (os != Os.WINDOWS)
+                    ch = Variables.slash.charAt(0);
+                else {
+                    if (!quteAddedInStart) {
+                        processedPath.insert(0, '\"');
+                        quteAddedInStart = true;
+                    }
+                }
+            }
+            processedPath.append(ch);
+        }
+        if (quteAddedInStart)
+            processedPath.append('\"');
+        return processedPath.toString();
+    }
 }
