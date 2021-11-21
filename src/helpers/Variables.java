@@ -2,5 +2,6 @@ package helpers;
 
 public class Variables {
     public static int currentLine;
-    public static String slash;
+    public static String separator;
+    public static final char[] separators = {'/', '\\'};
 }

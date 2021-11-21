@@ -53,7 +53,7 @@ public class Functions {
      * @return True if the line represents a path, false if it is not a path
      */
     public static boolean isPath(String line, Os os) {
-        return line.contains(Variables.slash);
+        return line.contains(Variables.separator);
     }
 
     /**
@@ -137,7 +137,7 @@ public class Functions {
                     currentPath = shortCuts(afterCd, currentPath, previousDirectory, os);
                 }
             }
-            String finalPath = currentPath.length() == 2 ? currentPath + Variables.slash : currentPath;
+            String finalPath = currentPath.length() == 2 ? currentPath + Variables.separator : currentPath;
             // Set prev dir
             if (!finalPath.equals(currentDirectory.getPath()))
                 setDir(currentDirectory.getPath(), previousDirectory);
@@ -154,7 +154,7 @@ public class Functions {
         String afterCd = command.substring(3);
         int backs = getNumOfBack(command);
         for (int i = 0; i < backs; i++) {
-            String fileName = Variables.slash + currentDirectory.getName();
+            String fileName = Variables.separator + currentDirectory.getName();
             int end = currentPath.length() - fileName.length();
             if (end > 0)
                 currentPath = currentPath.substring(0, end);
@@ -166,7 +166,7 @@ public class Functions {
         int temp = backs * 2;
         temp += temp - 1; // Slashes
         if (temp < afterCd.length())
-            currentPath += Variables.slash + afterCd.substring(temp);
+            currentPath += Variables.separator + afterCd.substring(temp);
         return currentPath;
     }
 
@@ -199,7 +199,7 @@ public class Functions {
             };
         }
         if (afterCd.length() > 1)
-            currentPath += Variables.slash + afterCd;
+            currentPath += Variables.separator + afterCd;
 
         return currentPath;
     }
@@ -210,7 +210,7 @@ public class Functions {
         for (char ch : path.toCharArray()) {
             if (ch == ' ') {
                 if (os != Os.WINDOWS)
-                    ch = Variables.slash.charAt(0);
+                    ch = Variables.separator.charAt(0);
                 else {
                     if (!quteAddedInStart) {
                         processedPath.insert(0, '\"');
@@ -223,5 +223,13 @@ public class Functions {
         if (quteAddedInStart)
             processedPath.append('\"');
         return processedPath.toString();
+    }
+
+    public static int getNumberOfCh(String str, char ch) {
+        int numberOfCh = 0;
+        for (char che : str.toCharArray())
+            if (che == ch)
+                numberOfCh++;
+        return numberOfCh;
     }
 }

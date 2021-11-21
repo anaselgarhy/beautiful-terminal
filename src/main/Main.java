@@ -19,7 +19,7 @@ public class Main {
         Command command = new Command(currentDirectory, previousDirectory, os);
 
         // Initialize slash
-        Variables.slash = File.separator;
+        Variables.separator = File.separator;
         // Initialize current directory
         Functions.initCurrentDirectory(os, currentDirectory);
 

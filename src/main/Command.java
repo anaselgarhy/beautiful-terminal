@@ -73,7 +73,7 @@ public class Command {
     }
 
     public Command setCommand(String command) {
-        this.command = processCommandDir(command);
+        this.command = processCommandPath(command);
         return this;
     }
 
@@ -82,16 +82,31 @@ public class Command {
         return this;
     }
 
-    private String processCommandDir(String command) {
+    private String processCommandPath(String command) {
         StringBuilder commandProcessed = new StringBuilder();
+        boolean dot = false;
         for (int i = 0; i < command.length(); i++) {
             if (command.charAt(i) == '.'
                     && ((i + 1 >= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
                     || (i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ' && command.charAt(i + 1) == ' ')
-                    || (i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ' && command.charAt(i + 1) == Variables.slash.charAt(0)))) {
+                    || ((i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
+                        && (command.charAt(i + 1) == Variables.separators[0] || command.charAt(i+ 1) == Variables.separators[1])))) {
                 commandProcessed.append(Functions.processPath(currentDirectory.getPath(), os));
-            } else
-                commandProcessed.append(command.charAt(i));
+                dot = true;
+            } else {
+                if (commandProcessed.toString().endsWith("\"") && dot
+                        && (command.charAt(i) == Variables.separators[0] || command.charAt(i) == Variables.separators[1]))
+                    commandProcessed.deleteCharAt(commandProcessed.toString().length() - 1);
+
+                if (!(command.charAt(i) == '\"' && dot))
+                    commandProcessed.append(command.charAt(i));
+
+                if ((command.length() <= i + 1 && dot)
+                        || (i + 2 < command.length() && command.charAt(i + 1) == ' ' && command.charAt(i + 2) == '-')) {
+                    commandProcessed.append("\"");
+                    dot = false;
+                }
+            }
         }
         return commandProcessed.toString();
     }
