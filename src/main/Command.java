@@ -101,8 +101,8 @@ public class Command {
                 if (!(command.charAt(i) == '\"' && dot))
                     commandProcessed.append(command.charAt(i));
 
-                if ((command.length() <= i + 1 && dot)
-                        || (i + 2 < command.length() && command.charAt(i + 1) == ' ' && command.charAt(i + 2) == '-')) {
+                if (dot && ((command.length() <= i + 1)
+                        || (i + 2 < command.length() && command.charAt(i + 1) == ' ' && command.charAt(i + 2) == '-'))) {
                     commandProcessed.append("\"");
                     dot = false;
                 }
