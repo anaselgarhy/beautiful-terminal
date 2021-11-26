@@ -47,13 +47,11 @@ public class Functions {
 
     /**
      * This function is used to check whether the text represents a path or not (needs to be modified)
-     *
      * @param line The line you want to check
-     * @param os   The operating system
      * @return True if the line represents a path, false if it is not a path
      */
-    public static boolean isPath(String line, Os os) {
-        return line.contains(Variables.separator);
+    public static boolean isPath(String line) {
+        return line.contains(String.valueOf(Variables.separator));
     }
 
     /**
@@ -210,7 +208,7 @@ public class Functions {
         for (char ch : path.toCharArray()) {
             if (ch == ' ') {
                 if (os != Os.WINDOWS)
-                    ch = Variables.separator.charAt(0);
+                    ch = Variables.separator;
                 else {
                     if (!quteAddedInStart) {
                         processedPath.insert(0, '\"');

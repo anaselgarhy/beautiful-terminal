@@ -55,7 +55,7 @@ public class Command {
         int i = 0;
         StringBuilder result = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            isPath = Functions.isPath(line, os);
+            isPath = Functions.isPath(line);
             result.append(line).append('\n');
             i++;
         }
@@ -84,29 +84,48 @@ public class Command {
 
     private String processCommandPath(String command) {
         StringBuilder commandProcessed = new StringBuilder();
-        boolean dot = false;
-        for (int i = 0; i < command.length(); i++) {
-            if (command.charAt(i) == '.'
-                    && ((i + 1 >= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
-                    || (i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ' && command.charAt(i + 1) == ' ')
-                    || ((i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
-                        && (command.charAt(i + 1) == Variables.separators[0] || command.charAt(i+ 1) == Variables.separators[1])))) {
-                commandProcessed.append(Functions.processPath(currentDirectory.getPath(), os));
-                dot = true;
-            } else {
-                if (commandProcessed.toString().endsWith("\"") && dot
-                        && (command.charAt(i) == Variables.separators[0] || command.charAt(i) == Variables.separators[1]))
-                    commandProcessed.deleteCharAt(commandProcessed.toString().length() - 1);
+        boolean dot = false, doubleQuestionOpened = false, singleQuestionOpened = false;
+        if (!command.startsWith("cd ")
+                && (command.contains(" .")
+                || command.contains(" ." + Variables.separators[0])
+                || command.contains(" ." + Variables.separators[1]))) {
+            for (int i = 0; i < command.length(); i++) {
+                if (command.charAt(i) == '.'
+                        && ((i + 1 >= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
+                        || (i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ' && command.charAt(i + 1) == ' ')
+                        || ((i + 1 <= command.length() && i - 1 > 0 && command.charAt(i - 1) == ' ')
+                        && (command.charAt(i + 1) == Variables.separators[0] || command.charAt(i + 1) == Variables.separators[1])))) {
+                    commandProcessed.append(Functions.processPath(currentDirectory.getPath(), os));
+                    dot = true;
+                } else {
+                    if (commandProcessed.toString().endsWith(String.valueOf(Variables.questions[0]))
+                            || commandProcessed.toString().endsWith(String.valueOf(Variables.questions[1])) && dot
+                            && (command.charAt(i) == Variables.separators[0] || command.charAt(i) == Variables.separators[1]))
+                        commandProcessed.deleteCharAt(commandProcessed.toString().length() - 1);
 
-                if (!(command.charAt(i) == '\"' && dot))
-                    commandProcessed.append(command.charAt(i));
 
-                if (dot && ((command.length() <= i + 1)
-                        || (i + 2 < command.length() && command.charAt(i + 1) == ' ' && command.charAt(i + 2) == '-'))) {
-                    commandProcessed.append("\"");
-                    dot = false;
+                    if (!((command.charAt(i) == Variables.questions[0] || command.charAt(i) == Variables.questions[1]) && dot))
+                        commandProcessed.append(command.charAt(i));
+                    else if (command.charAt(i) == Variables.questions[0])
+                        singleQuestionOpened = !singleQuestionOpened;
+                    else if (command.charAt(i) == Variables.questions[1])
+                        doubleQuestionOpened = !doubleQuestionOpened;
+
+                    if (dot && !(singleQuestionOpened || doubleQuestionOpened) && ((command.length() <= i + 1)
+                            || (i + 2 < command.length() && command.charAt(i + 1) == ' ' && command.charAt(i + 2) == '-'))) {
+                        commandProcessed.append("\"");
+                        dot = false;
+                    }
                 }
             }
+        } else {
+            int skip = 0;
+            if (command.startsWith("cd "))
+                if (command.charAt(3) == '.'
+                        && (command.charAt(4) == Variables.separators[0]
+                        || command.charAt(4) == Variables.separators[1]))
+                        skip = 5;
+            commandProcessed.append((skip > 0)? "cd " : "").append(command.substring(skip));
         }
         return commandProcessed.toString();
     }
