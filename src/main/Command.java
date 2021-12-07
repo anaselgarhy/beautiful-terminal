@@ -33,7 +33,7 @@ public class Command {
      * @return Object from ProcessBuilder class that represents It is a ready-to-implement process
      */
     private ProcessBuilder buildProcess() {
-        String runCommand = (os == Os.WINDOWS? "cmd /" : "sh -") + "c " + command;
+        String runCommand = Variables.shell.getExec() + command;
         // split command
         StringTokenizer st = new StringTokenizer(runCommand);
         String[] cmdarray = new String[st.countTokens()];
