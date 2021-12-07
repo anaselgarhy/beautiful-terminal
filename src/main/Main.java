@@ -1,6 +1,7 @@
 package main;
 
 import enums.Os;
+import enums.Shell;
 import files.Directory;
 import helpers.Functions;
 import helpers.Variables;
@@ -18,6 +19,8 @@ public class Main {
         Directory previousDirectory = new Directory();
         Command command = new Command(currentDirectory, previousDirectory, os);
 
+        // Initialize shell
+        Variables.shell = Shell.POWERSHELL; // To test
         // Initialize slash
         Variables.separator = File.separator.charAt(0);
         // Initialize current directory
@@ -28,7 +31,6 @@ public class Main {
 
         // main loop
         do {
-
             System.out.print(currentDirectory.getPath() + st);
             command.setCommand(input.nextLine());
             // Run command
