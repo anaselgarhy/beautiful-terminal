@@ -8,11 +8,13 @@ public class Directory {
     public Directory() {
         currentDirectory = new File("");
     }
-    public void setDirectory(File currentDirectory) {
-        this.currentDirectory = currentDirectory;
-    }
+
     public File getDirectory() {
         return currentDirectory;
+    }
+
+    public void setDirectory(File currentDirectory) {
+        this.currentDirectory = currentDirectory;
     }
 
     public String getPath() {

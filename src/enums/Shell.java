@@ -1,7 +1,7 @@
 package enums;
 
 public enum Shell {
-    POWERSHELL("powershell", "C:\\Windows\\System32\\WindowsPowerShell\\v1.0",'-'),
+    POWERSHELL("powershell", "C:\\Windows\\System32\\WindowsPowerShell\\v1.0", '-'),
     CMD("cmd", "C:\\Windows\\system32", '/'),
     SH("sh", "", '-'),
     BUSH("bush", "C:\\Windows\\system32", '-');
@@ -9,7 +9,7 @@ public enum Shell {
     private final String name, path;
     private final char argS; // Argument separator
 
-    private Shell(String name, String path, char argS) {
+    Shell(String name, String path, char argS) {
         this.name = name;
         this.path = path;
         this.argS = argS;
@@ -22,6 +22,7 @@ public enum Shell {
     public String getPath() {
         return path;
     }
+
     public char getArgS() {
         return argS;
     }

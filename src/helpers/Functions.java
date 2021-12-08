@@ -47,6 +47,7 @@ public class Functions {
 
     /**
      * This function is used to check whether the text represents a path or not (needs to be modified)
+     *
      * @param line The line you want to check
      * @return True if the line represents a path, false if it is not a path
      */
@@ -122,7 +123,8 @@ public class Functions {
         if (currentDirectory != null) {
             try {
                 process.waitFor(); // pause this thread until end process
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
             String currentPath = currentDirectory.getPath();
             if (command.contains("cd") && command.length() > 3 && process.exitValue() == 0) {
                 String afterCd = command.substring(3);
