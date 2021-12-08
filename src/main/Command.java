@@ -11,9 +11,9 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Command {
-    private String command;
     private final Os os;
     private final Directory currentDirectory, previousDirectory;
+    private String command;
     private Process process;
 
     public Command(Directory currentDirectory, Directory previousDirectory, Os os) {
@@ -23,13 +23,14 @@ public class Command {
     }
 
     public void run(boolean andPrint) throws IOException {
-        process =  buildProcess().start();
+        process = buildProcess().start();
         if (andPrint)
             System.out.print(getResult());
     }
 
     /**
      * It is used to build the process so that we can execute it and print the logs at the same time
+     *
      * @return Object from ProcessBuilder class that represents It is a ready-to-implement process
      */
     private ProcessBuilder buildProcess() {
@@ -45,6 +46,7 @@ public class Command {
 
     /**
      * It is used to obtain the results of the execution of the command and used to set current directory
+     *
      * @return The result
      * @throws IOException If an I/O error occurs
      */
@@ -124,8 +126,8 @@ public class Command {
                 if (command.charAt(3) == '.'
                         && (command.charAt(4) == Variables.separators[0]
                         || command.charAt(4) == Variables.separators[1]))
-                        skip = 5;
-            commandProcessed.append((skip > 0)? "cd " : "").append(command.substring(skip));
+                    skip = 5;
+            commandProcessed.append((skip > 0) ? "cd " : "").append(command.substring(skip));
         }
         return commandProcessed.toString();
     }

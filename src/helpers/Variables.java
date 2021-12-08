@@ -3,6 +3,8 @@ package helpers;
 import enums.Shell;
 
 public class Variables {
+    public static final char[] separators = {'/', '\\'};
+    public static final char[] questions = {'\'', '\"'};
     public static int currentLine;
     public static char separator;
     /**
@@ -11,6 +13,4 @@ public class Variables {
      * like: sh or zsh or bash for linux
      */
     public static Shell shell;
-    public static final char[] separators = {'/', '\\'};
-    public static final char[] questions = {'\'', '\"'};
 }
