@@ -32,11 +32,10 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v2.4.0
       with:
-          # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
-          java-version: 16
-          # Java distribution. See the list of supported distributions in README file
-          distribution: none
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
           # The package type (jdk, jre, jdk+fx, jre+fx)
           java-package: jdk # optional, default is jdk
           # The architecture of the package
           architecture: x64 # optional, default is x64
+    - run: java -Dfile.encoding=UTF-8 -classpath .\out\production\beautiful\ terminal main.Main
