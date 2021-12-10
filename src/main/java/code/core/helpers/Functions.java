@@ -1,8 +1,8 @@
-package core.helpers;
+package code.core.helpers;
 
-import core.enums.Os;
-import core.files.Directory;
-import main.Command;
+import code.core.enums.Os;
+import code.core.files.Directory;
+import code.main.Command;
 
 import java.io.File;
 import java.io.IOException;

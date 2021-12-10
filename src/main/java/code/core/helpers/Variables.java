@@ -1,6 +1,6 @@
-package core.helpers;
+package code.core.helpers;
 
-import core.enums.Shell;
+import code.core.enums.Shell;
 
 public class Variables {
     public static final char[] separators = {'/', '\\'};
