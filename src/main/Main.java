@@ -1,10 +1,10 @@
 package main;
 
-import enums.Os;
-import enums.Shell;
-import files.Directory;
-import helpers.Functions;
-import helpers.Variables;
+import core.enums.Os;
+import core.enums.Shell;
+import core.files.Directory;
+import core.helpers.Functions;
+import core.helpers.Variables;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package enums;
+package core.enums;
 
 public enum Shell {
     POWERSHELL("powershell", "C:\\Windows\\System32\\WindowsPowerShell\\v1.0", '-'),
