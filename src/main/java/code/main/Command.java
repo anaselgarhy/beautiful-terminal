@@ -1,9 +1,9 @@
-package main;
+package code.main;
 
-import enums.Os;
-import files.Directory;
-import helpers.Functions;
-import helpers.Variables;
+import code.core.enums.Os;
+import code.core.files.Directory;
+import code.core.helpers.Functions;
+import code.core.helpers.Variables;
 
 import java.io.BufferedReader;
 import java.io.IOException;
