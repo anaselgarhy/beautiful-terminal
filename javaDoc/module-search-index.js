@@ -1,0 +1,1 @@
+moduleSearchIndex = [{"l":"code.beautifulterminal"}];updateSearchResults();
