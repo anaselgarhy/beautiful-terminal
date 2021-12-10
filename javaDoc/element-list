@@ -1,7 +1,0 @@
-module:code.beautifulterminal
-code.core.enums
-code.core.files
-code.core.helpers
-code.gui
-code.main
-configs
