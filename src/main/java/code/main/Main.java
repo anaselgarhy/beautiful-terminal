@@ -1,6 +1,6 @@
 package code.main;
 
-import code.gui.HelloApplication;
+import code.gui.MainFrame;
 import code.core.enums.Os;
 import code.core.enums.Shell;
 import code.core.files.Directory;
@@ -26,7 +26,7 @@ public class Main {
         // Initialize current directory
         Functions.initCurrentDirectory(os, currentDirectory);
 
-        new HelloApplication().run();
+        new MainFrame().run();
         String st = " $ ";
 
         // main loop
