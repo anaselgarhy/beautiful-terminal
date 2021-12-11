@@ -1,6 +1,7 @@
-package code.main;
+package code.core;
 
 import code.core.enums.Os;
+import code.core.enums.Shell;
 import code.core.files.Directory;
 import code.core.helpers.Functions;
 import code.core.helpers.Variables;
@@ -10,14 +11,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+import static code.core.helpers.Variables.os;
+
 public class Command {
-    private final Os os;
+    private final Shell shell;
     private final Directory currentDirectory, previousDirectory;
     private String command;
     private Process process;
 
-    public Command(Directory currentDirectory, Directory previousDirectory, Os os) {
-        this.os = os;
+    public Command(Directory currentDirectory, Directory previousDirectory, Shell shell) {
+        this.shell = shell;
         this.currentDirectory = currentDirectory;
         this.previousDirectory = previousDirectory;
     }
@@ -34,7 +37,7 @@ public class Command {
      * @return Object from ProcessBuilder class that represents It is a ready-to-implement process
      */
     private ProcessBuilder buildProcess() {
-        String runCommand = Variables.shell.getExec() + command;
+        String runCommand = shell.getExec() + command;
         // split command
         StringTokenizer st = new StringTokenizer(runCommand);
         String[] cmdarray = new String[st.countTokens()];
@@ -62,11 +65,12 @@ public class Command {
             i++;
         }
         // Set current directory
-        Functions.setDirectory(command, process, currentDirectory, previousDirectory, os);
-        if (isPath && i == 1 && process.exitValue() == 0 && currentDirectory.getPath().equals("")) {
+        if (command.startsWith("cd"))
+            Functions.setDirectory(command, process, currentDirectory, previousDirectory, os);
+        /*if (isPath && i == 1 && process.exitValue() == 0 && currentDirectory.getPath().equals("")) {
             Functions.setDir(result.toString(), currentDirectory);
             return "";
-        }
+        }*/
         return result.toString();
     }
 
@@ -130,5 +134,10 @@ public class Command {
             commandProcessed.append((skip > 0) ? "cd " : "").append(command.substring(skip));
         }
         return commandProcessed.toString();
+    }
+
+    @Override
+    public String toString() {
+        return command;
     }
 }
