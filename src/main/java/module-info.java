@@ -1,4 +1,4 @@
-module code.beautifulterminal {
+module beautifulterminal.code {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
