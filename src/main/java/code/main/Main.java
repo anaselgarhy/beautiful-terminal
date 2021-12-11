@@ -2,6 +2,7 @@ package code.main;
 
 import code.core.Command;
 import code.core.CustomShellCore;
+import code.core.NativeShellCore;
 import code.core.ShellCore;
 import code.gui.MainFrame;
 import code.core.enums.Os;
@@ -24,7 +25,7 @@ public class Main {
 
         Variables.os = os;
 
-        CustomShellCore shell1 = new CustomShellCore(Shell.POWERSHELL);
+        NativeShellCore shell1 = new NativeShellCore(Shell.POWERSHELL);
 
         // new MainFrame().run();
         String st = " $ ";

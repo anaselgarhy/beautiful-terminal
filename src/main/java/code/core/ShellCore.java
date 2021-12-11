@@ -55,7 +55,6 @@ public abstract class ShellCore {
                     .setCommand(command)
                     .setProcess(process)
                     .getResult();
-            System.out.println("path = " + path);
             currentDirectory.setDirectory(new File(path.replace("\n", "")));
         } catch (IOException ignored) {
         }
