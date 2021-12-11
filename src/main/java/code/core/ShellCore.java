@@ -43,8 +43,6 @@ public abstract class ShellCore {
 
     /**
      * This function uses an initial path, usually used at the start of the program (needs to be modified)
-     *
-     *   current directory object reference
      */
     public void initCurrentDirectory() {
         Shell sh = (os == Os.WINDOWS)? Shell.CMD : Shell.SH;
