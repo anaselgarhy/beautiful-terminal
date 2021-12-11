@@ -56,13 +56,9 @@ public class Command {
     public String getResult() throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
-        boolean isPath = false;
-        int i = 0;
         StringBuilder result = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            isPath = Functions.isPath(line);
             result.append(line).append('\n');
-            i++;
         }
         // Set current directory
         if (command.startsWith("cd"))
