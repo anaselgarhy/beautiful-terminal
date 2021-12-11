@@ -43,8 +43,6 @@ public abstract class ShellCore {
 
     /**
      * This function uses an initial path, usually used at the start of the program (needs to be modified)
-     *
-     *   current directory object reference
      */
     public void initCurrentDirectory() {
         Shell sh = (os == Os.WINDOWS)? Shell.CMD : Shell.SH;
@@ -55,7 +53,6 @@ public abstract class ShellCore {
                     .setCommand(command)
                     .setProcess(process)
                     .getResult();
-            System.out.println("path = " + path);
             currentDirectory.setDirectory(new File(path.replace("\n", "")));
         } catch (IOException ignored) {
         }
