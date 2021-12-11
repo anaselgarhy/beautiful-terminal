@@ -28,13 +28,15 @@ public class Main {
         NativeShellCore shell1 = new NativeShellCore(Shell.POWERSHELL);
 
         // new MainFrame().run();
-        String st = " $ ";
+        if (!(shell1 instanceof NativeShellCore)) {
+            String st = " $ ";
 
-        // main loop
-        do {
-            System.out.print(shell1.getCurrentDirectory().getPath() + st);
-            // Run command
-            shell1.runCommand(input.nextLine());
-        } while (!shell1.getCommand().toString().equalsIgnoreCase("exit"));
+            // main loop
+            do {
+                System.out.print(shell1.getCurrentDirectory().getPath() + st);
+                // Run command
+                shell1.runCommand(input.nextLine());
+            } while (!shell1.getCommand().toString().equalsIgnoreCase("exit"));
+        }
     }
 }
