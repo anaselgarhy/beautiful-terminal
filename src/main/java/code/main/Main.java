@@ -1,5 +1,8 @@
 package code.main;
 
+import code.core.Command;
+import code.core.CustomShellCore;
+import code.core.ShellCore;
 import code.gui.MainFrame;
 import code.core.enums.Os;
 import code.core.enums.Shell;
@@ -15,32 +18,22 @@ public class Main {
         /* --------------------------------- Test --------------------------------- */
         Scanner input = new Scanner(System.in);
         Os os = Functions.getOs();
-        Directory currentDirectory = new Directory();
-        Directory previousDirectory = new Directory();
-        Command command = new Command(currentDirectory, previousDirectory, os);
 
-        // Initialize shell
-        Variables.shell = Shell.POWERSHELL; // To test
         // Initialize slash
         Variables.separator = File.separator.charAt(0);
-        // Initialize current directory
-        Functions.initCurrentDirectory(os, currentDirectory);
 
-        new MainFrame().run();
+        Variables.os = os;
+
+        CustomShellCore shell1 = new CustomShellCore(Shell.POWERSHELL);
+
+        // new MainFrame().run();
         String st = " $ ";
 
         // main loop
         do {
-            System.out.print(currentDirectory.getPath() + st);
-            command.setCommand(input.nextLine());
+            System.out.print(shell1.getCurrentDirectory().getPath() + st);
             // Run command
-            try {
-                command.run(false);
-                System.out.print(command.getResult());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-//            currentDirectory = Directory.getDirectory();
-        } while (!command.getCommand().equalsIgnoreCase("exit"));
+            shell1.runCommand(input.nextLine());
+        } while (!shell1.getCommand().toString().equalsIgnoreCase("exit"));
     }
 }

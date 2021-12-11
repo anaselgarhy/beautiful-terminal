@@ -1,8 +1,9 @@
 package code.core.helpers;
 
 import code.core.enums.Os;
+import code.core.enums.Shell;
 import code.core.files.Directory;
-import code.main.Command;
+import code.core.Command;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,23 +63,6 @@ public class Functions {
      */
     public static void setDir(String path, Directory directory) {
         directory.setDirectory(new File(path.replace("\n", "")));
-    }
-
-    /**
-     * This function uses an initial path, usually used at the start of the program (needs to be modified)
-     *
-     * @param os The operating system
-     */
-    public static void initCurrentDirectory(Os os, Directory currentDirectory) {
-        String command = (os == Os.WINDOWS) ? "cd" : "pwd";
-        try {
-            Process process = runCommand(command, null, os);
-            new Command(currentDirectory, null, os)
-                    .setCommand(command)
-                    .setProcess(process)
-                    .getResult();
-        } catch (IOException ignored) {
-        }
     }
 
     /**

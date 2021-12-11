@@ -1,5 +1,6 @@
 package code.core.helpers;
 
+import code.core.enums.Os;
 import code.core.enums.Shell;
 
 public class Variables {
@@ -13,4 +14,5 @@ public class Variables {
      * like: sh or zsh or bash for linux
      */
     public static Shell shell;
+    public static Os os;
 }
