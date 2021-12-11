@@ -67,10 +67,7 @@ public class Command {
         // Set current directory
         if (command.startsWith("cd"))
             Functions.setDirectory(command, process, currentDirectory, previousDirectory, os);
-        /*if (isPath && i == 1 && process.exitValue() == 0 && currentDirectory.getPath().equals("")) {
-            Functions.setDir(result.toString(), currentDirectory);
-            return "";
-        }*/
+
         return result.toString();
     }
 
