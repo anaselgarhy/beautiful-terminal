@@ -1,4 +1,4 @@
-package configs;
+package code.configs;
 
 public class Configs {
 }
