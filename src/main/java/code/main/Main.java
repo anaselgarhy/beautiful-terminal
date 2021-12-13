@@ -21,10 +21,9 @@ public class Main {
 
         Variables.os = os;
 
-        NativeShellCore shell1 = new NativeShellCore(Shell.POWERSHELL);
+        CustomShellCore shell1 = new CustomShellCore(Shell.POWERSHELL);
 
         // new MainFrame().run();
-        if (!(shell1 instanceof NativeShellCore)) {
             String st = " $ ";
 
             // main loop
@@ -33,6 +32,5 @@ public class Main {
                 // Run command
                 shell1.runCommand(input.nextLine());
             } while (!shell1.getCommand().toString().equalsIgnoreCase("exit"));
-        }
     }
 }
