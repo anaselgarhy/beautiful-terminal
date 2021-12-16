@@ -1,15 +1,10 @@
 package code.core.helpers;
 
 import code.core.enums.Os;
-import code.core.enums.Shell;
 import code.core.files.Directory;
-import code.core.Command;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public class Functions {
 
     /**
