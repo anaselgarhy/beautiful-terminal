@@ -1,13 +1,10 @@
 package code.core.helpers;
 
 import code.core.enums.Os;
-import code.core.enums.Shell;
 import code.core.files.Directory;
-import code.core.Command;
 
 import java.io.File;
 import java.io.IOException;
-
 public class Functions {
 
     /**
@@ -68,14 +65,19 @@ public class Functions {
     /**
      * This function is used to find the number of steps back
      *
-     * @param command The change directory command
+     * @param afterCd The change directory command
      * @return The number of steps back
      */
-    public static int getNumOfBack(String command) {
+    public static int getNumOfBack(String afterCd) {
         int numOfBack = 0;
-        command = command.replace("cd ", "");
-        for (int i = 0; i < command.length() && i + 1 < command.length(); i++) {
-            String temp = command.charAt(i) + "" + command.charAt(++i);
+        for (int i = 0; i < afterCd.length() && i + 1 < afterCd.length(); i++) {
+            // Skip separator
+            if (afterCd.charAt(i) == Variables.separators[0]
+                    || afterCd.charAt(i) == Variables.separators[1]) {
+                afterCd = afterCd.substring(i + 1);
+                i -= 2;
+            }
+            String temp = afterCd.charAt(i) + "" + afterCd.charAt(++i);
             if (temp.equals(".."))
                 numOfBack++;
         }
@@ -113,7 +115,7 @@ public class Functions {
             if (command.contains("cd") && command.length() > 3 && process.exitValue() == 0) {
                 String afterCd = command.substring(3);
                 if (afterCd.startsWith(".."))
-                    currentPath = backDir(command, currentPath, currentDirectory);
+                    currentPath = backDir(afterCd, currentPath, currentDirectory);
                 else if (!(afterCd.startsWith(".") && !(afterCd.length() > 1))) {
                     // Clean path
                     afterCd = cleanPath(afterCd);
@@ -134,16 +136,20 @@ public class Functions {
         return false;
     }
 
-    private static String backDir(String command, String currentPath, Directory currentDirectory) {
-        String afterCd = command.substring(3);
-        int backs = getNumOfBack(command);
+    private static String backDir(String afterCd, String currentPath, Directory currentDirectory) {
+        int backs = getNumOfBack(afterCd);
+        // Temp directory
+        Directory tempDir = new Directory();
+        tempDir.setDirectory(currentDirectory.getDirectory());
+        // Get
         for (int i = 0; i < backs; i++) {
-            String fileName = Variables.separator + currentDirectory.getName();
+            String fileName = Variables.separator + tempDir.getName();
             int end = currentPath.length() - fileName.length();
-            if (end > 0)
-                currentPath = currentPath.substring(0, end);
-            else {
-                currentPath = currentDirectory.getPath();
+            if (end > 0) {
+                tempDir.setPath(currentPath.substring(0, end));
+                currentPath = tempDir.getPath();
+            } else {
+                currentPath = tempDir.getPath();
                 break;
             }
         }

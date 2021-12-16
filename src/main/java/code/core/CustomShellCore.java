@@ -10,9 +10,11 @@ public class CustomShellCore extends ShellCore{
     }
     @Override
     public void runCommand(String command) {
-        getCommand().setCommand(command);
+            getCommand().setCommand(command);
         try {
-            getCommand().run(true);
+            if (!command.isBlank()) {
+                getCommand().run(true);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
