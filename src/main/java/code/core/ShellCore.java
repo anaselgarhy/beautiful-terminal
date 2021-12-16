@@ -3,7 +3,6 @@ package code.core;
 import code.core.enums.Os;
 import code.core.enums.Shell;
 import code.core.files.Directory;
-import code.core.helpers.Functions;
 
 import java.io.File;
 import java.io.IOException;
