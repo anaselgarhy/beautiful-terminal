@@ -3,25 +3,28 @@ package code.core.files;
 import java.io.File;
 
 public class Directory {
-    private File currentDirectory;
+    private File file;
 
     public Directory() {
-        currentDirectory = new File("");
+        file = new File("");
     }
 
     public File getDirectory() {
-        return currentDirectory;
+        return file;
     }
 
-    public void setDirectory(File currentDirectory) {
-        this.currentDirectory = currentDirectory;
+    public void setDirectory(File file) {
+        this.file = file;
     }
 
     public String getPath() {
-        return currentDirectory.getPath();
+        return file.getPath();
+    }
+    public void setPath(String path) {
+       this.file = new File(path);
     }
 
     public String getName() {
-        return currentDirectory.getName();
+        return file.getName();
     }
 }
