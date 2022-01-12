@@ -1,13 +1,13 @@
-package code.core;
+package com.anas.code.core;
 
-import code.core.enums.Os;
-import code.core.enums.Shell;
-import code.core.files.Directory;
+import com.anas.code.core.enums.Os;
+import com.anas.code.core.enums.Shell;
+import com.anas.code.core.files.Directory;
 
 import java.io.File;
 import java.io.IOException;
 
-import static code.core.helpers.Variables.os;
+import static com.anas.code.core.helpers.Variables.os;
 
 public abstract class ShellCore {
     private final Shell shell;

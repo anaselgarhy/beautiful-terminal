@@ -1,6 +1,6 @@
-package code.core;
+package com.anas.code.core;
 
-import code.core.enums.Shell;
+import com.anas.code.core.enums.Shell;
 
 import java.io.IOException;
 

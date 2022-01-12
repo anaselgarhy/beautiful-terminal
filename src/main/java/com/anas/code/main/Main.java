@@ -1,12 +1,12 @@
-package code.main;
+package com.anas.code.main;
 
-import code.core.CustomShellCore;
-import code.core.NativeShellCore;
-import code.core.ShellCore;
-import code.core.enums.Os;
-import code.core.enums.Shell;
-import code.core.helpers.Functions;
-import code.core.helpers.Variables;
+import com.anas.code.core.CustomShellCore;
+import com.anas.code.core.NativeShellCore;
+import com.anas.code.core.ShellCore;
+import com.anas.code.core.enums.Os;
+import com.anas.code.core.enums.Shell;
+import com.anas.code.core.helpers.Functions;
+import com.anas.code.core.helpers.Variables;
 import java.io.File;
 import java.util.Scanner;
 

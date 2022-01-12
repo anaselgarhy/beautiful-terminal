@@ -1,4 +1,4 @@
-package code.gui;
+package com.anas.code.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
