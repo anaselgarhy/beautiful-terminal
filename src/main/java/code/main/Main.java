@@ -21,7 +21,7 @@ public class Main {
 
         Variables.os = os;
 
-        NativeShellCore shell1 = new NativeShellCore(Shell.POWERSHELL);
+        ShellCore shell1 = new NativeShellCore(Shell.POWERSHELL);
 
         // new MainFrame().run();
 
