@@ -10,6 +10,6 @@ module beautifulterminal.code {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
 
-    opens code.gui to javafx.fxml;
-    exports code.gui;
+    opens com.anas.code.gui to javafx.fxml;
+    exports com.anas.code.gui;
 }

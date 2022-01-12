@@ -112,7 +112,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>code.beautifulterminal/code.gui.MainFrame</mainClass>
+                            <mainClass>com.anas.code.beautifulterminal/com.anas.code.gui.MainFrame</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

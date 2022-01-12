@@ -1,4 +1,4 @@
-package code.gui;
+package com.anas.code.gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

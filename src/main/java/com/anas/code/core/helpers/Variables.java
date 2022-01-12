@@ -1,7 +1,7 @@
-package code.core.helpers;
+package com.anas.code.core.helpers;
 
-import code.core.enums.Os;
-import code.core.enums.Shell;
+import com.anas.code.core.enums.Os;
+import com.anas.code.core.enums.Shell;
 
 public class Variables {
     public static final char[] separators = {'/', '\\'};

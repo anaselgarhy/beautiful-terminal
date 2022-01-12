@@ -1,16 +1,16 @@
-package code.core;
+package com.anas.code.core;
 
-import code.core.enums.Shell;
-import code.core.files.Directory;
-import code.core.helpers.Functions;
-import code.core.helpers.Variables;
+import com.anas.code.core.enums.Shell;
+import com.anas.code.core.files.Directory;
+import com.anas.code.core.helpers.Functions;
+import com.anas.code.core.helpers.Variables;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-import static code.core.helpers.Variables.os;
+import static com.anas.code.core.helpers.Variables.os;
 
 public class Command {
     private final Shell shell;

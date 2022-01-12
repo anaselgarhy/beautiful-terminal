@@ -1,7 +1,7 @@
-package code.core.helpers;
+package com.anas.code.core.helpers;
 
-import code.core.enums.Os;
-import code.core.files.Directory;
+import com.anas.code.core.enums.Os;
+import com.anas.code.core.files.Directory;
 
 import java.io.File;
 import java.io.IOException;
